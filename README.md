@@ -109,20 +109,6 @@ jobs:
         uses: Leechael/phala-deploy-action@v2
         with:
           phala-api-key: ${{ secrets.PHALA_CLOUD_API_KEY }}
-          cvm-name: 'my-app'
-      
-      # Store the app-id for future updates
-      - name: Save App ID
-        if: steps.deploy.outputs.deployment-status == 'success' && steps.deploy.outputs.app-id != ''
-        uses: actions/github-script@v6
-        with:
-          script: |
-            await github.rest.actions.createOrUpdateRepoVariable({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              name: 'SAVED_APP_ID',
-              value: '${{ steps.deploy.outputs.app-id }}'
-            })
 ```
 
 ## Example: Update Existing CVM
@@ -146,38 +132,7 @@ jobs:
         uses: Leechael/phala-deploy-action@v2
         with:
           phala-api-key: ${{ secrets.PHALA_CLOUD_API_KEY }}
-          app-id: ${{ vars.SAVED_APP_ID }}
-          compose-file: './docker-compose.yml'
-```
-
-## Example: Conditional Deployment Actions
-
-```yaml
-jobs:
-  deploy-and-notify:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Deploy to Phala Cloud
-        id: deploy
-        uses: Leechael/phala-deploy-action@v2
-        with:
-          phala-api-key: ${{ secrets.PHALA_CLOUD_API_KEY }}
-      
-      - name: Notify Success
-        if: steps.deploy.outputs.deployment-status == 'success'
-        run: |
-          curl -X POST -H "Content-Type: application/json" \
-            -d '{"text":"✅ Deployment successful!\nCVM ID: ${{ steps.deploy.outputs.cvm-id }}\nApp ID: ${{ steps.deploy.outputs.app-id }}\nURL: ${{ steps.deploy.outputs.deployment-url }}"}' \
-            ${{ secrets.SLACK_WEBHOOK_URL }}
-            
-      - name: Notify Failure
-        if: steps.deploy.outputs.deployment-status == 'failed'
-        run: |
-          curl -X POST -H "Content-Type: application/json" \
-            -d '{"text":"❌ Deployment failed! Please check logs."}' \
-            ${{ secrets.SLACK_WEBHOOK_URL }}
+          app-id: ${{ secrets.PHALA_CLOUD_APP_ID }}
 ```
 
 ## Contributing
