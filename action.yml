@@ -159,11 +159,11 @@ runs:
         echo "$output" > /tmp/phala_output.txt
         
         # Extract CVM ID using grep and regex
-        cvm_id=$(grep -oP "CVM ID │ \K[0-9]+" /tmp/phala_output.txt || echo "")
+        cvm_id=$(grep -oP "CVM ID     │ \K[0-9]+" /tmp/phala_output.txt || echo "")
         echo "cvm-id=$cvm_id" >> $GITHUB_OUTPUT
         
-        # Extract App ID using grep and regex
-        app_id=$(grep -oP "App ID │ \Kapp_[a-f0-9]+" /tmp/phala_output.txt || echo "")
+        # Get App ID from the last line of output
+        app_id=$(tail -n 1 /tmp/phala_output.txt | grep -o "app_[a-zA-Z0-9]\+" || echo "")
         echo "app-id=$app_id" >> $GITHUB_OUTPUT
         echo "App ID: $app_id"
         
@@ -171,7 +171,7 @@ runs:
         echo "cvm-name=$CVM_NAME" >> $GITHUB_OUTPUT
         
         # Extract App URL using grep and regex
-        app_url=$(grep -oP "App URL │ \K[^\│]+" /tmp/phala_output.txt || echo "")
+        app_url=$(grep -oP "App URL    │ \K[^│]+" /tmp/phala_output.txt | tr -d ' ' || echo "")
         echo "deployment-url=$app_url" >> $GITHUB_OUTPUT
         
         # Set deployment status
