@@ -50,6 +50,14 @@ inputs:
     description: 'App ID of an existing CVM to update. If provided, will update the existing CVM instead of creating a new one'
     required: false
     default: ''
+  node-id:
+    description: 'Node ID (Teepod ID)'
+    required: false
+    default: ''
+  base-image:
+    description: 'Base image to use for the CVM'
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -78,6 +86,8 @@ runs:
           # Convert YAML to dotenv format
           echo "${{ inputs.envs }}" | yq -o=props > .env
           ENV_FLAG="-e .env"
+        elif [[ -n "${{ inputs.app-id }}" ]]; then
+          ENV_FLAG=""
         fi
         
         # Determine the CVM name based on inputs or repo name
