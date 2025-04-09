@@ -87,12 +87,12 @@ jobs:
 - Store your Phala Cloud API key in GitHub Secrets
 - Ensure proper API key permissions when using in public repositories
 
-## Example: Create and Update CVM
+## Example: Initial Deployment and App ID Storage
 
-This example shows how to create a CVM, store its app-id, and use it for subsequent updates:
+This example shows how to create a CVM and store its app-id for future updates:
 
 ```yaml
-name: Deploy and Update CVM
+name: Initial Deployment
 
 on:
   push:
@@ -123,20 +123,11 @@ jobs:
               name: 'SAVED_APP_ID',
               value: '${{ steps.deploy.outputs.app-id }}'
             })
-      
-      # Update existing CVM if app-id is available
-      - name: Update CVM
-        if: steps.deploy.outputs.deployment-status == 'success' && steps.deploy.outputs.app-id != ''
-        uses: Leechael/phala-deploy-action@v2
-        with:
-          phala-api-key: ${{ secrets.PHALA_CLOUD_API_KEY }}
-          app-id: ${{ steps.deploy.outputs.app-id }}
-          compose-file: './docker-compose.yml'
 ```
 
 ## Example: Update Existing CVM
 
-This example shows how to update an existing CVM using a stored app-id:
+This example shows how to update an existing CVM using the stored app-id in a subsequent workflow run:
 
 ```yaml
 name: Update CVM
