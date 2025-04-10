@@ -48,7 +48,7 @@ jobs:
     vcpu: '4'                         # Default: '2'
     memory: '4096'                    # Default: '2048'
     disk-size: '10'                   # Default: '40'
-    envs: |                           # Environment variables in YAML format (will be converted to dotenv)
+    envs:                             # Environment variables in YAML format (will be converted to dotenv)
       DATABASE_URL: postgresql://user:pass@localhost:5432/db
       API_KEY: your-api-key
       DEBUG: true
