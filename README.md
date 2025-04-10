@@ -48,9 +48,11 @@ jobs:
     vcpu: '4'                         # Default: '2'
     memory: '4096'                    # Default: '2048'
     disk-size: '10'                   # Default: '40'
-    envs: |                           # Environment variables in YAML format
-      DB_HOST: localhost
-      DB_PORT: 5432
+    envs: |                           # Environment variables in YAML format (will be converted to dotenv)
+      DATABASE_URL: postgresql://user:pass@localhost:5432/db
+      API_KEY: your-api-key
+      DEBUG: true
+      REDIS_PORT: 6379
     app-id: ''                        # App ID of existing CVM to update
     node-id: ''                       # Node ID (Teepod ID)
     base-image: ''                    # Base image to use for the CVM
@@ -66,7 +68,7 @@ jobs:
 | `vcpu` | Number of virtual CPUs | No | '2' |
 | `memory` | Memory size in MB | No | '2048' |
 | `disk-size` | Disk size in GB | No | '40' |
-| `envs` | Environment variables in YAML format | No | '' |
+| `envs` | Environment variables in YAML format (simple key-value pairs, will be converted to dotenv format) | No | '' |
 | `app-id` | App ID of existing CVM to update | No | '' |
 | `node-id` | Node ID (Teepod ID) | No | '' |
 | `base-image` | Base image to use for the CVM | No | '' |
