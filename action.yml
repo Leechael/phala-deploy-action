@@ -78,9 +78,9 @@ runs:
       run: |
         set -e
         cd $GITHUB_WORKSPACE
-        bun install -g phala
+        bun install -g phala@1.0.22
         phala auth login "${{ inputs.phala-api-key }}"
-        
+
         ENV_FLAG="--skip-env"
         if [[ -n "${{ inputs.envs }}" ]]; then
           # Convert YAML to dotenv format
