@@ -85,7 +85,7 @@ runs:
 
         phala status
 
-        ENV_FLAG="--skip-env"
+        ENV_FLAG=""
         if [[ -n "${{ inputs.envs }}" ]]; then
           # Convert YAML to dotenv format
           echo "${{ inputs.envs }}" | yq -o=props --properties-separator="=" > .env
@@ -94,15 +94,7 @@ runs:
           cat .env
           echo "==========================="
 
-          # For upgrade, use --skip-env temporarily to test
-          if [[ -n "${{ inputs.app-id }}" ]]; then
-            echo "⚠️  TESTING: Using --skip-env for upgrade (envs will be ignored)"
-            ENV_FLAG="--skip-env"
-          else
-            ENV_FLAG="-e .env"
-          fi
-        elif [[ -n "${{ inputs.app-id }}" ]]; then
-          ENV_FLAG=""
+          ENV_FLAG="-e .env"
         fi
         
         # Determine the CVM name based on inputs or repo name
