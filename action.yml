@@ -88,7 +88,7 @@ runs:
         ENV_FLAG="--skip-env"
         if [[ -n "${{ inputs.envs }}" ]]; then
           # Convert YAML to dotenv format
-          echo "${{ inputs.envs }}" | yq -o=props > .env
+          echo "${{ inputs.envs }}" | yq -o=props --properties-separator="=" > .env
           ENV_FLAG="-e .env"
         elif [[ -n "${{ inputs.app-id }}" ]]; then
           ENV_FLAG=""
