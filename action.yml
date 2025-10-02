@@ -127,14 +127,26 @@ runs:
         # Check if we should try to update an existing CVM
         if [[ -n "${{ inputs.app-id }}" ]]; then
           echo "App ID provided, will update existing CVM..."
-          
+
           # Update the CVM
+          set +e
           output=$(phala cvms upgrade ${{ inputs.app-id }} \
             --compose ${{ inputs.compose-file }} \
-            $ENV_FLAG)
-          
+            $ENV_FLAG 2>&1)
+          exit_code=$?
+          set -e
+
           # Output the CVM details
           echo "$output" > /tmp/phala_output.txt
+
+          # Check for errors
+          if [ $exit_code -ne 0 ]; then
+            echo "::error::Failed to upgrade CVM (exit code: $exit_code)"
+            echo "::group::Full error output"
+            cat /tmp/phala_output.txt
+            echo "::endgroup::"
+            exit $exit_code
+          fi
           
           # Set outputs
           echo "cvm-id=${{ inputs.app-id }}" >> $GITHUB_OUTPUT
