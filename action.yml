@@ -136,9 +136,10 @@ runs:
           echo "phala cvms upgrade ${{ inputs.app-id }} --compose ${{ inputs.compose-file }} $ENV_FLAG --debug"
           echo "::endgroup::"
 
-          # Update the CVM with --debug flag to get detailed error info
+          # Update the CVM with --debug flag and enable verbose axios logging
           set +e
-          output=$(phala cvms upgrade ${{ inputs.app-id }} \
+          output=$(NODE_DEBUG=* NODE_OPTIONS='--trace-warnings' \
+            phala cvms upgrade ${{ inputs.app-id }} \
             --compose ${{ inputs.compose-file }} \
             $ENV_FLAG \
             --debug 2>&1)
