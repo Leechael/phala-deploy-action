@@ -89,6 +89,12 @@ runs:
         if [[ -n "${{ inputs.envs }}" ]]; then
           # Convert YAML to dotenv format
           echo "${{ inputs.envs }}" | yq -o=props --properties-separator="=" > .env
+
+          # Debug: show generated .env file
+          echo "::group::Generated .env file"
+          cat .env
+          echo "::endgroup::"
+
           ENV_FLAG="-e .env"
         elif [[ -n "${{ inputs.app-id }}" ]]; then
           ENV_FLAG=""
@@ -127,12 +133,21 @@ runs:
         # Check if we should try to update an existing CVM
         if [[ -n "${{ inputs.app-id }}" ]]; then
           echo "App ID provided, will update existing CVM..."
-          
-          # Update the CVM
-          output=$(phala cvms upgrade ${{ inputs.app-id }} \
+
+          # Debug: show upgrade command
+          echo "::group::Upgrade command"
+          echo "phala cvms upgrade ${{ inputs.app-id }} --compose ${{ inputs.compose-file }} $ENV_FLAG"
+          echo "::endgroup::"
+
+          # Update the CVM and capture full output including errors
+          if ! output=$(phala cvms upgrade ${{ inputs.app-id }} \
             --compose ${{ inputs.compose-file }} \
-            $ENV_FLAG)
-          
+            $ENV_FLAG 2>&1); then
+            echo "::error::Phala CLI upgrade failed:"
+            echo "$output"
+            exit 1
+          fi
+
           # Output the CVM details
           echo "$output" > /tmp/phala_output.txt
           
