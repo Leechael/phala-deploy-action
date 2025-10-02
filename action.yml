@@ -94,7 +94,13 @@ runs:
           cat .env
           echo "==========================="
 
-          ENV_FLAG="-e .env"
+          # For upgrade, use --skip-env temporarily to test
+          if [[ -n "${{ inputs.app-id }}" ]]; then
+            echo "⚠️  TESTING: Using --skip-env for upgrade (envs will be ignored)"
+            ENV_FLAG="--skip-env"
+          else
+            ENV_FLAG="-e .env"
+          fi
         elif [[ -n "${{ inputs.app-id }}" ]]; then
           ENV_FLAG=""
         fi
