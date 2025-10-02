@@ -79,7 +79,7 @@ runs:
         set -e
         cd $GITHUB_WORKSPACE
 
-        bun install -g phala@1.0.31
+        bun install -g phala@1.0.32
 
         export PHALA_CLOUD_API_KEY="${{ inputs.phala-api-key }}"
 
@@ -90,6 +90,9 @@ runs:
           # Convert YAML to dotenv format
           echo "${{ inputs.envs }}" | yq -o=props --properties-separator="=" > .env
           ENV_FLAG="-e .env"
+          echo "------"
+          cat .env
+          echo "------"
         elif [[ -n "${{ inputs.app-id }}" ]]; then
           ENV_FLAG=""
         fi
