@@ -131,27 +131,30 @@ runs:
         if [[ -n "${{ inputs.app-id }}" ]]; then
           echo "App ID provided, will update existing CVM..."
 
-          # Debug: show upgrade command
+          # Debug: show upgrade command with --debug flag
           echo "::group::Upgrade command"
-          echo "phala cvms upgrade ${{ inputs.app-id }} --compose ${{ inputs.compose-file }} $ENV_FLAG"
+          echo "phala cvms upgrade ${{ inputs.app-id }} --compose ${{ inputs.compose-file }} $ENV_FLAG --debug"
           echo "::endgroup::"
 
-          # Update the CVM and capture both stdout and stderr
+          # Update the CVM with --debug flag to get detailed error info
           set +e
           output=$(phala cvms upgrade ${{ inputs.app-id }} \
             --compose ${{ inputs.compose-file }} \
-            $ENV_FLAG 2>&1)
+            $ENV_FLAG \
+            --debug 2>&1)
           exit_code=$?
           set -e
 
-          # Debug: show full output
+          # Debug: show full output including any API response bodies
           echo "::group::Phala CLI output (exit code: $exit_code)"
           echo "$output"
           echo "::endgroup::"
 
           if [ $exit_code -ne 0 ]; then
             echo "::error::Phala CLI upgrade failed with exit code $exit_code"
+            echo "========== FULL ERROR OUTPUT =========="
             echo "$output"
+            echo "========================================"
             exit $exit_code
           fi
 
